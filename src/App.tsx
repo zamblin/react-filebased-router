@@ -1,3 +1,4 @@
+// src/App.tsx
 import React from 'react';
 import {
   createBrowserRouter,
@@ -5,26 +6,15 @@ import {
   RouteObject,
 } from 'react-router-dom';
 
-interface PageModule {
-  default: React.ComponentType;
-  loader?: () => Promise<any>;
-  action?: () => Promise<any>;
-  ErrorBoundary?: React.ComponentType;
-}
+// 모든 페이지를 정적으로 임포트합니다.
+const PAGES = import.meta.glob('/src/pages/**/[a-z[]*.tsx', { eager: true });
 
-declare const import_meta: {
-  glob: (
-    path: string,
-    options: { eager: boolean }
-  ) => Record<string, PageModule>;
-};
-
-const pages = import.meta.glob<PageModule>('./pages/**/*.tsx', { eager: true });
+console.log('Available pages:', Object.keys(PAGES));
 
 const routes: RouteObject[] = [];
 
-for (const path of Object.keys(pages)) {
-  const fileName = path.match(/\.\/pages\/(.*)\.tsx$/)?.[1];
+for (const path of Object.keys(PAGES)) {
+  const fileName = path.match(/\/src\/pages\/(.*)\.tsx$/)?.[1];
   if (!fileName) {
     continue;
   }
@@ -33,16 +23,34 @@ for (const path of Object.keys(pages)) {
     ? fileName.replace('$', ':')
     : fileName.replace(/\/index/, '');
 
+  const routePath =
+    fileName === 'index' ? '/' : `/${normalizedPathName.toLowerCase()}`;
+
+  console.log(`Creating route: ${routePath} -> ${path}`);
+
   routes.push({
-    path: fileName === 'index' ? '/' : `/${normalizedPathName.toLowerCase()}`,
-    element: React.createElement(pages[path].default),
-    loader: pages[path]?.loader,
-    action: pages[path]?.action,
-    errorElement: pages[path]?.ErrorBoundary
-      ? React.createElement(pages[path].ErrorBoundary!)
+    path: routePath,
+    element: React.createElement((PAGES[path] as any).default),
+    loader: (PAGES[path] as any).loader,
+    action: (PAGES[path] as any).action,
+    errorElement: (PAGES[path] as any).ErrorBoundary
+      ? React.createElement((PAGES[path] as any).ErrorBoundary)
       : undefined,
   });
 }
+
+// 404 페이지를 위한 catch-all 라우트 추가
+const notFoundPage = Object.keys(PAGES).find((path) =>
+  path.endsWith('/404.tsx')
+);
+routes.push({
+  path: '*',
+  element: notFoundPage
+    ? React.createElement((PAGES[notFoundPage] as any).default)
+    : React.createElement(() => <div>Not Found</div>),
+});
+
+console.log('Generated routes:', routes);
 
 const router = createBrowserRouter(routes);
 
