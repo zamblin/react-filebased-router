@@ -6,7 +6,6 @@ import {
   RouteObject,
 } from 'react-router-dom';
 
-// 모든 페이지를 정적으로 임포트합니다.
 const PAGES = import.meta.glob('/src/pages/**/[a-z[]*.tsx', { eager: true });
 
 console.log('Available pages:', Object.keys(PAGES));
@@ -39,7 +38,6 @@ for (const path of Object.keys(PAGES)) {
   });
 }
 
-// 404 페이지를 위한 catch-all 라우트 추가
 const notFoundPage = Object.keys(PAGES).find((path) =>
   path.endsWith('/404.tsx')
 );
@@ -52,7 +50,7 @@ routes.push({
 
 console.log('Generated routes:', routes);
 
-const router = createBrowserRouter(routes);
+const router = createBrowserRouter(routes, { basename: '/' });
 
 const App: React.FC = () => {
   return <RouterProvider router={router} />;
