@@ -23,25 +23,3 @@ export default defineConfig({
   },
   base: '/',
 });
-
-/*
-<script>
-      (function () {
-        const segment = 1;
-        const l = window.location;
-        if (l.hash) {
-          if (l.search) {
-            l.search += '&' + l.hash.slice(1);
-          } else {
-            l.search = '?' + l.hash.slice(1);
-          }
-          l.hash = '';
-          window.history.replaceState(
-            null,
-            null,
-            l.pathname + l.search + l.hash
-          );
-        }
-      })();
-    </script>
-    */
