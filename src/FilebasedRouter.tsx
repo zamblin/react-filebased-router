@@ -8,7 +8,7 @@ import {
 const PAGES = import.meta.glob('/src/pages/**/[a-z[]*.tsx', { eager: true });
 
 interface GenerateRoutesOptions {
-  custom404?: React.ComponentType;
+  custom404?: React.ComponentType | React.ReactElement;
 }
 
 const generateRoutes = ({
@@ -51,7 +51,9 @@ const generateRoutes = ({
   );
 
   const notFoundElement = custom404
-    ? React.createElement(custom404)
+    ? React.isValidElement(custom404)
+      ? custom404
+      : React.createElement(custom404 as React.ComponentType)
     : notFoundPage
     ? React.createElement((PAGES[notFoundPage] as any).default)
     : React.createElement(() => <div>Not Found</div>);
@@ -68,7 +70,7 @@ const generateRoutes = ({
 
 interface FileBasedRouterProps {
   basename?: string;
-  custom404?: React.ComponentType;
+  custom404?: React.ComponentType | React.ReactElement;
 }
 
 const FileBasedRouter: React.FC<FileBasedRouterProps> = ({
