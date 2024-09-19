@@ -17,9 +17,10 @@ for (const path of Object.keys(PAGES)) {
     continue;
   }
 
-  const normalizedPathName = fileName.includes('$')
-    ? fileName.replace('$', ':')
-    : fileName.replace(/\/index/, '');
+  let normalizedPathName = fileName.replace(/\/index/, '');
+
+  // Handle dynamic routes
+  normalizedPathName = normalizedPathName.replace(/\[([^\]]+)\]/g, ':$1');
 
   const routePath =
     fileName === 'index' ? '/' : `/${normalizedPathName.toLowerCase()}`;
