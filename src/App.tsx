@@ -5,5 +5,5 @@ const Err = () => {
 };
 
 export const App = () => {
-  return <FileBasedRouter custom404={Err} />;
+  return <FileBasedRouter custom404={<Err />} />;
 };
