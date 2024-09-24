@@ -1,8 +1,32 @@
 {
-  "name": "project",
+  "name": "react-filebased-router",
   "main": "dist/index.js",
   "version": "0.0.0",
   "type": "module",
+  "description": "it is react filebased router (with vite)",
+  "license": "ISC",
+  "homepage": "https://github.com/zamblin/react-filebased-router",
+  "files": [
+    "dist/"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zamblin/react-filebased-router"
+  },
+  "bugs": {
+    "email": "dutexion@gmail.com"
+  },
+  "author": {
+    "name": "dutexion",
+    "url": "https://github.com/dutexion"
+  },
+  "keywords": [
+    "react",
+    "vite",
+    "router",
+    "filebased",
+    "react-router"
+  ],
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
