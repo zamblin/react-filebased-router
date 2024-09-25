@@ -1,7 +1,7 @@
 {
   "name": "react-filebased-router",
   "main": "dist/index.js",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "description": "it is react filebased router (with vite)",
   "license": "ISC",
