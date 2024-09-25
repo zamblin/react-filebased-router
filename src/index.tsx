@@ -1,7 +1,8 @@
-// import { createRoot } from 'react-dom/client';
-// import { App } from './App.tsx';
+import { createRoot } from 'react-dom/client';
+import { App } from './App.tsx';
 
-// createRoot(document.getElementById('root')!).render(<App />);
-import FileBasedRouter from './FilebasedRouter';
+createRoot(document.getElementById('root')!).render(<App />);
 
-export default FileBasedRouter;
+// import FileBasedRouter from './FilebasedRouter';
+
+// export default FileBasedRouter;
