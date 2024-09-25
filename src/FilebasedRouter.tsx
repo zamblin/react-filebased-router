@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import {
   createBrowserRouter,
@@ -16,21 +17,22 @@ const generateRoutes = ({
 }: GenerateRoutesOptions = {}): RouteObject[] => {
   const routes: RouteObject[] = [];
 
-  console.log('Available pages:', Object.keys(PAGES));
+  console.log('Found files:', Object.keys(PAGES));
 
   for (const path of Object.keys(PAGES)) {
-    const fileName = path.match(/\/src\/pages\/(.*)\.tsx$/)?.[1];
+    const fileName = path.match(/\/src\/pages\/(.*)\.(tsx|jsx)$/)?.[1];
     if (!fileName) {
       continue;
     }
 
-    let normalizedPathName = fileName.replace(/\/index/, '');
+    // Handle Router Groups ( /(trash)/test1.tsx, /(trash)/test2.tsx )
+    let normalizedPath = fileName.replace(/\((.*)\)\//g, '').toLowerCase();
 
-    // Handle dynamic routes
-    normalizedPathName = normalizedPathName.replace(/\[([^\]]+)\]/g, ':$1');
+    // Handle Dynamic Routes ( /[path1]/[path2] )
+    normalizedPath = normalizedPath.replace(/\[([^\]]+)\]/g, ':$1');
 
-    const routePath =
-      fileName === 'index' ? '/' : `/${normalizedPathName.toLowerCase()}`;
+    // Handle Index Routes ( /path/index )
+    const routePath = normalizedPath.replace('index', '');
 
     console.log(`Creating route: ${routePath} -> ${path}`);
 
@@ -62,9 +64,7 @@ const generateRoutes = ({
     path: '*',
     element: notFoundElement,
   });
-
   console.log('Generated routes:', routes);
-
   return routes;
 };
 
