@@ -6,7 +6,7 @@ import {
   RouteObject,
 } from 'react-router-dom';
 
-const PAGES = import.meta.glob('/src/pages/**', { eager: true });
+const PAGES = import.meta.glob('/src/pages/**/[a-z[]*.tsx', { eager: true });
 
 interface GenerateRoutesOptions {
   custom404?: React.ComponentType | React.ReactElement;
