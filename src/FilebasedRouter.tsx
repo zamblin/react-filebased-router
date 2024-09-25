@@ -1,11 +1,12 @@
-import React from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import React from "react";
 import {
   createBrowserRouter,
   RouterProvider,
   RouteObject,
-} from 'react-router-dom';
+} from "react-router-dom";
 
-const PAGES = import.meta.glob('/src/pages/**/[a-z[]*.tsx', { eager: true });
+const PAGES = import.meta.glob("/src/pages/**", { eager: true });
 
 interface GenerateRoutesOptions {
   custom404?: React.ComponentType | React.ReactElement;
@@ -16,21 +17,22 @@ const generateRoutes = ({
 }: GenerateRoutesOptions = {}): RouteObject[] => {
   const routes: RouteObject[] = [];
 
-  console.log('Available pages:', Object.keys(PAGES));
+  console.log("Found files:", Object.keys(PAGES));
 
   for (const path of Object.keys(PAGES)) {
-    const fileName = path.match(/\/src\/pages\/(.*)\.tsx$/)?.[1];
-    if (!fileName) {
-      continue;
-    }
+    const fileName = path
+      .match(/\/src\/pages\/(.*)\.(tsx|jsx)$/)?.[1]
+      .toLowerCase();
+    if (!fileName) continue;
 
-    let normalizedPathName = fileName.replace(/\/index/, '');
+    // Handle Router Groups ( /(trash)/test1.tsx, /(trash)/test2.tsx )
+    let routePath = fileName.replaceAll(/\((.*)\)\//g, "");
 
-    // Handle dynamic routes
-    normalizedPathName = normalizedPathName.replace(/\[([^\]]+)\]/g, ':$1');
+    // Handle Dynamic Routes ( /[path1]/[path2] )
+    routePath = routePath.replaceAll(/\[([^\]]+)\]/g, ":$1");
 
-    const routePath =
-      fileName === 'index' ? '/' : `/${normalizedPathName.toLowerCase()}`;
+    // Handle Index Routes ( /path/index )
+    routePath = routePath.replaceAll("index", "");
 
     console.log(`Creating route: ${routePath} -> ${path}`);
 
@@ -47,7 +49,7 @@ const generateRoutes = ({
 
   // Add the 404 route
   const notFoundPage = Object.keys(PAGES).find((path) =>
-    path.endsWith('/404.tsx')
+    path.endsWith("/404.tsx")
   );
 
   const notFoundElement = custom404
@@ -59,12 +61,10 @@ const generateRoutes = ({
     : React.createElement(() => <div>Not Found</div>);
 
   routes.push({
-    path: '*',
+    path: "*",
     element: notFoundElement,
   });
-
-  console.log('Generated routes:', routes);
-
+  console.log("Generated routes:", routes);
   return routes;
 };
 
@@ -74,7 +74,7 @@ interface FileBasedRouterProps {
 }
 
 const FileBasedRouter: React.FC<FileBasedRouterProps> = ({
-  basename = '/',
+  basename = "/",
   custom404,
 }) => {
   const routes = generateRoutes({ custom404 });
